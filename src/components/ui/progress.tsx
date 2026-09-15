@@ -1,15 +1,13 @@
-import { motion } from "framer-motion";
 import { cn, clamp } from "@/lib/utils";
 
 interface ProgressProps {
   value: number;
   className?: string;
-  barClassName?: string;
-  /** CSS color for the fill; defaults to the primary gradient */
+  /** CSS colour for the fill; defaults to the primary colour. */
   color?: string;
 }
 
-export function Progress({ value, className, barClassName, color }: ProgressProps) {
+export function Progress({ value, className, color }: ProgressProps) {
   const pct = clamp(value, 0, 100);
   return (
     <div
@@ -17,18 +15,11 @@ export function Progress({ value, className, barClassName, color }: ProgressProp
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={Math.round(pct)}
-      className={cn("h-2 w-full overflow-hidden rounded-full bg-secondary", className)}
+      className={cn("h-1.5 w-full overflow-hidden rounded-full bg-secondary", className)}
     >
-      <motion.div
-        className={cn(
-          "h-full rounded-full",
-          !color && "bg-gradient-to-r from-violet-500 to-cyan-400",
-          barClassName,
-        )}
-        style={color ? { backgroundColor: color } : undefined}
-        initial={{ width: 0 }}
-        animate={{ width: `${pct}%` }}
-        transition={{ type: "spring", stiffness: 80, damping: 20 }}
+      <div
+        className="h-full rounded-full bg-primary transition-[width] duration-500 ease-out"
+        style={{ width: `${pct}%`, ...(color ? { backgroundColor: color } : {}) }}
       />
     </div>
   );

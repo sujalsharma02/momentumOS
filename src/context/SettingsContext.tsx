@@ -1,6 +1,8 @@
-import { createContext, useContext, useEffect, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, type ReactNode } from "react";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { normalizeSettings } from "@/lib/normalize";
 import { setSoundEnabled } from "@/lib/sound";
+import { STORAGE_KEYS } from "@/lib/storage";
 import type { Settings } from "@/types";
 
 interface SettingsContextValue {
@@ -14,7 +16,9 @@ const SettingsContext = createContext<SettingsContextValue | null>(null);
 const DEFAULT_SETTINGS: Settings = { theme: "dark", soundEnabled: true };
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useLocalStorage<Settings>("settings", DEFAULT_SETTINGS);
+  const [settings, setSettings] = useLocalStorage<Settings>(STORAGE_KEYS.settings, DEFAULT_SETTINGS, {
+    normalize: normalizeSettings,
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", settings.theme === "dark");
@@ -24,17 +28,22 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     setSoundEnabled(settings.soundEnabled);
   }, [settings.soundEnabled]);
 
-  const toggleTheme = () =>
-    setSettings((prev) => ({ ...prev, theme: prev.theme === "dark" ? "light" : "dark" }));
-
-  const toggleSound = () =>
-    setSettings((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled }));
-
-  return (
-    <SettingsContext.Provider value={{ settings, toggleTheme, toggleSound }}>
-      {children}
-    </SettingsContext.Provider>
+  const toggleTheme = useCallback(
+    () => setSettings((prev) => ({ ...prev, theme: prev.theme === "dark" ? "light" : "dark" })),
+    [setSettings],
   );
+
+  const toggleSound = useCallback(
+    () => setSettings((prev) => ({ ...prev, soundEnabled: !prev.soundEnabled })),
+    [setSettings],
+  );
+
+  const value = useMemo(
+    () => ({ settings, toggleTheme, toggleSound }),
+    [settings, toggleTheme, toggleSound],
+  );
+
+  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 }
 
 export function useSettings() {

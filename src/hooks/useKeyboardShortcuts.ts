@@ -11,7 +11,12 @@ function isTypingTarget(target: EventTarget | null): boolean {
   );
 }
 
-/** Global shortcuts: 1–9 navigate, t = theme, s = sound. */
+/** True while a Radix dialog is open, so shortcuts don't fire behind a modal. */
+function isDialogOpen(): boolean {
+  return document.querySelector('[role="dialog"][data-state="open"]') !== null;
+}
+
+/** Global shortcuts: nav keys (see `nav.ts`), t = theme, s = sound. */
 export function useKeyboardShortcuts() {
   const navigate = useNavigate();
   const { toggleTheme, toggleSound } = useSettings();
@@ -19,7 +24,7 @@ export function useKeyboardShortcuts() {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.metaKey || event.ctrlKey || event.altKey) return;
-      if (isTypingTarget(event.target)) return;
+      if (isTypingTarget(event.target) || isDialogOpen()) return;
 
       const navItem = NAV_ITEMS.find((item) => item.shortcut === event.key);
       if (navItem) {

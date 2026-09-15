@@ -8,44 +8,78 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Field, FieldRow } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import type { ApplicationInput } from "@/context/DataContext";
+import { PIPELINE_ORDER, PRIORITY_META, STATUS_META, WORK_MODE_LABEL } from "@/data/pipeline";
 import { todayISO } from "@/lib/dates";
-import type { ApplicationStatus, JobApplication } from "@/types";
-
-export const STATUS_OPTIONS: Array<{ value: ApplicationStatus; label: string }> = [
-  { value: "applied", label: "Applied" },
-  { value: "interview", label: "Interview" },
-  { value: "offer", label: "Offer" },
-  { value: "rejected", label: "Rejected" },
-];
+import {
+  PRIORITIES,
+  WORK_MODES,
+  type ApplicationStatus,
+  type JobApplication,
+  type Priority,
+  type WorkMode,
+} from "@/types";
 
 interface ApplicationDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  /** when set, the dialog edits this application instead of creating one */
+  /** When set, the dialog edits this application instead of creating one. */
   editing?: JobApplication | null;
-  onSubmit: (values: Omit<JobApplication, "id">) => void;
+  onSubmit: (values: ApplicationInput) => void;
 }
 
-const emptyForm = (): Omit<JobApplication, "id"> => ({
+const emptyForm = (): ApplicationInput => ({
   company: "",
   role: "",
+  location: "",
+  workMode: undefined,
+  compensation: "",
   appliedDate: todayISO(),
+  source: "",
   status: "applied",
+  contact: "",
   followUpDate: undefined,
+  interviewDate: undefined,
   notes: "",
+  url: "",
+  priority: "medium",
 });
 
+const toForm = (app: JobApplication): ApplicationInput => ({
+  company: app.company,
+  role: app.role,
+  location: app.location ?? "",
+  workMode: app.workMode,
+  compensation: app.compensation ?? "",
+  appliedDate: app.appliedDate,
+  source: app.source ?? "",
+  status: app.status,
+  contact: app.contact ?? "",
+  followUpDate: app.followUpDate,
+  interviewDate: app.interviewDate,
+  notes: app.notes ?? "",
+  url: app.url ?? "",
+  priority: app.priority,
+});
+
+const clean = (value?: string) => {
+  const text = value?.trim();
+  return text ? text : undefined;
+};
+
 export function ApplicationDialog({ open, onOpenChange, editing, onSubmit }: ApplicationDialogProps) {
-  const [form, setForm] = useState(emptyForm());
+  const [form, setForm] = useState<ApplicationInput>(emptyForm());
 
   useEffect(() => {
-    if (open) {
-      setForm(editing ? { ...editing } : emptyForm());
-    }
+    if (open) setForm(editing ? toForm(editing) : emptyForm());
   }, [open, editing]);
+
+  const set = <K extends keyof ApplicationInput>(key: K, value: ApplicationInput[K]) =>
+    setForm((current) => ({ ...current, [key]: value }));
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -54,84 +88,167 @@ export function ApplicationDialog({ open, onOpenChange, editing, onSubmit }: App
       ...form,
       company: form.company.trim(),
       role: form.role.trim(),
+      location: clean(form.location),
+      compensation: clean(form.compensation),
+      source: clean(form.source),
+      contact: clean(form.contact),
+      notes: clean(form.notes),
+      url: clean(form.url),
       followUpDate: form.followUpDate || undefined,
-      notes: form.notes?.trim() || undefined,
+      interviewDate: form.interviewDate || undefined,
     });
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>{editing ? "Edit application" : "Add application"}</DialogTitle>
           <DialogDescription>
-            {editing ? "Update the status as you move through the funnel." : "Log it the moment you hit submit."}
+            {editing
+              ? "Move it through the pipeline as things happen."
+              : "Company and role are enough to start; fill the rest in as you learn it."}
           </DialogDescription>
         </DialogHeader>
+
         <form onSubmit={handleSubmit} className="grid gap-4">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-1.5 text-sm font-medium">
-              Company
+          <FieldRow>
+            <Field label="Company">
               <Input
                 autoFocus
                 required
                 value={form.company}
-                onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
-                placeholder="Vercel"
+                onChange={(e) => set("company", e.target.value)}
+                placeholder="Personio"
               />
-            </label>
-            <label className="grid gap-1.5 text-sm font-medium">
-              Role
+            </Field>
+            <Field label="Role">
               <Input
                 required
                 value={form.role}
-                onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
-                placeholder="AI Full Stack Engineer"
+                onChange={(e) => set("role", e.target.value)}
+                placeholder="Backend Engineer (Python)"
               />
-            </label>
-          </div>
+            </Field>
+          </FieldRow>
+
           <div className="grid gap-4 sm:grid-cols-3">
-            <label className="grid gap-1.5 text-sm font-medium">
-              Applied
+            <Field label="Status">
+              <Select
+                value={form.status}
+                onChange={(e) => set("status", e.target.value as ApplicationStatus)}
+              >
+                {PIPELINE_ORDER.map((status) => (
+                  <option key={status} value={status}>
+                    {STATUS_META[status].label}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label="Priority">
+              <Select
+                value={form.priority}
+                onChange={(e) => set("priority", e.target.value as Priority)}
+              >
+                {PRIORITIES.map((priority) => (
+                  <option key={priority} value={priority}>
+                    {PRIORITY_META[priority].label}
+                  </option>
+                ))}
+              </Select>
+            </Field>
+            <Field label="Applied on">
               <Input
                 type="date"
                 required
                 value={form.appliedDate}
-                onChange={(e) => setForm((f) => ({ ...f, appliedDate: e.target.value }))}
+                onChange={(e) => set("appliedDate", e.target.value)}
               />
-            </label>
-            <label className="grid gap-1.5 text-sm font-medium">
-              Status
+            </Field>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Location">
+              <Input
+                value={form.location ?? ""}
+                onChange={(e) => set("location", e.target.value)}
+                placeholder="Berlin, DE"
+              />
+            </Field>
+            <Field label="Work mode">
               <Select
-                value={form.status}
-                onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as ApplicationStatus }))}
+                value={form.workMode ?? ""}
+                onChange={(e) => set("workMode", (e.target.value || undefined) as WorkMode | undefined)}
               >
-                {STATUS_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
+                <option value="">Not specified</option>
+                {WORK_MODES.map((mode) => (
+                  <option key={mode} value={mode}>
+                    {WORK_MODE_LABEL[mode]}
                   </option>
                 ))}
               </Select>
-            </label>
-            <label className="grid gap-1.5 text-sm font-medium">
-              Follow up
+            </Field>
+            <Field label="Compensation">
+              <Input
+                value={form.compensation ?? ""}
+                onChange={(e) => set("compensation", e.target.value)}
+                placeholder="€70-85k / ₹30 LPA"
+              />
+            </Field>
+          </div>
+
+          <FieldRow>
+            <Field label="Source">
+              <Input
+                value={form.source ?? ""}
+                onChange={(e) => set("source", e.target.value)}
+                placeholder="LinkedIn, referral, careers page"
+              />
+            </Field>
+            <Field label="Contact">
+              <Input
+                value={form.contact ?? ""}
+                onChange={(e) => set("contact", e.target.value)}
+                placeholder="Recruiter or hiring manager"
+              />
+            </Field>
+          </FieldRow>
+
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Field label="Follow up on">
               <Input
                 type="date"
                 value={form.followUpDate ?? ""}
-                onChange={(e) => setForm((f) => ({ ...f, followUpDate: e.target.value || undefined }))}
+                onChange={(e) => set("followUpDate", e.target.value || undefined)}
               />
-            </label>
+            </Field>
+            <Field label="Interview on">
+              <Input
+                type="date"
+                value={form.interviewDate ?? ""}
+                onChange={(e) => set("interviewDate", e.target.value || undefined)}
+              />
+            </Field>
+            <Field label="Job URL">
+              <Input
+                type="url"
+                value={form.url ?? ""}
+                onChange={(e) => set("url", e.target.value)}
+                placeholder="https://"
+              />
+            </Field>
           </div>
-          <label className="grid gap-1.5 text-sm font-medium">
-            Notes
+
+          <Field label="Notes">
             <Textarea
               value={form.notes ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-              placeholder="Referral from X, recruiter said…"
-              className="min-h-[60px]"
+              onChange={(e) => set("notes", e.target.value)}
+              placeholder="Interview format, who you spoke to, what they care about..."
+              className="min-h-[72px]"
             />
-          </label>
+          </Field>
+
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => onOpenChange(false)}>
               Cancel

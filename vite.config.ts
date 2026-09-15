@@ -9,4 +9,15 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Charts are only needed on Statistics; keep them out of the main chunk.
+        manualChunks: {
+          charts: ["recharts"],
+          markdown: ["react-markdown"],
+        },
+      },
+    },
+  },
 });

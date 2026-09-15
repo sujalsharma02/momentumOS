@@ -5,154 +5,185 @@
 @tailwind utilities;
 
 @layer base {
+  /*
+   * Light theme. Warm-neutral paper rather than pure white, so solid cards can
+   * sit a step brighter than the page without glowing.
+   */
   :root {
-    --background: 240 20% 99%;
-    --foreground: 240 10% 4%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
-    --primary: 258 90% 66%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    --accent: 258 90% 96%;
-    --accent-foreground: 258 70% 40%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 258 90% 66%;
-    --radius: 0.75rem;
+    --background: 240 20% 98%;
+    --foreground: 240 12% 10%;
 
-    /* chart ink (light) */
-    --chart-grid: #e1e0d9;
-    --chart-axis: #898781;
+    --card: 0 0% 100%;
+    --card-foreground: 240 12% 10%;
+    --elevated: 240 20% 96%;
+
+    --primary: 256 74% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 12% 94%;
+    --secondary-foreground: 240 10% 16%;
+
+    --muted: 240 12% 94%;
+    --muted-foreground: 240 6% 42%;
+
+    --accent: 256 70% 95%;
+    --accent-foreground: 256 60% 38%;
+
+    --destructive: 0 68% 48%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 10% 88%;
+    --input: 240 10% 86%;
+    --ring: 256 74% 56%;
+
+    --radius: 0.625rem;
+
+    --chart-grid: #e4e3e8;
+    --chart-axis: #7b7a85;
+
+    --shadow-card: 0 1px 2px rgb(16 16 24 / 0.05), 0 1px 3px rgb(16 16 24 / 0.04);
+    --shadow-raised: 0 4px 12px rgb(16 16 24 / 0.08), 0 1px 3px rgb(16 16 24 / 0.05);
   }
 
+  /*
+   * Dark theme — the primary target. Cool near-black with clearly separated
+   * elevation steps, so depth comes from value rather than blur and glow.
+   */
   .dark {
-    --background: 240 24% 5%;
-    --foreground: 240 10% 96%;
-    --card: 240 20% 8%;
-    --card-foreground: 240 10% 96%;
-    --primary: 258 90% 70%;
-    --primary-foreground: 240 24% 5%;
-    --secondary: 240 12% 13%;
-    --secondary-foreground: 240 10% 90%;
-    --muted: 240 12% 13%;
-    --muted-foreground: 240 6% 62%;
-    --accent: 258 40% 18%;
-    --accent-foreground: 258 90% 80%;
-    --destructive: 0 72% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 12% 16%;
-    --input: 240 12% 18%;
-    --ring: 258 90% 70%;
+    --background: 228 16% 7%;
+    --foreground: 225 16% 95%;
 
-    /* chart ink (dark) */
-    --chart-grid: #2c2c34;
-    --chart-axis: #898791;
+    --card: 228 14% 10%;
+    --card-foreground: 225 16% 95%;
+    --elevated: 228 13% 13%;
+
+    --primary: 256 84% 70%;
+    --primary-foreground: 228 20% 8%;
+
+    --secondary: 228 12% 16%;
+    --secondary-foreground: 225 14% 90%;
+
+    --muted: 228 12% 16%;
+    --muted-foreground: 226 9% 62%;
+
+    --accent: 256 40% 20%;
+    --accent-foreground: 256 84% 84%;
+
+    --destructive: 0 70% 62%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 228 11% 19%;
+    --input: 228 11% 22%;
+    --ring: 256 84% 70%;
+
+    --chart-grid: #26262e;
+    --chart-axis: #83828e;
+
+    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-raised: 0 8px 24px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
   }
 
   * {
     @apply border-border;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
     @apply bg-background font-sans text-foreground antialiased;
-    font-feature-settings: "cv02", "cv03", "cv04";
+    font-feature-settings: "cv02", "cv03", "cv04", "ss01";
   }
 
   ::selection {
-    @apply bg-primary/30;
+    @apply bg-primary/25;
   }
 
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 10px;
+    height: 10px;
   }
   ::-webkit-scrollbar-track {
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-muted-foreground/25;
+    @apply rounded-full bg-muted-foreground/20;
+    border: 3px solid transparent;
+    background-clip: content-box;
   }
   ::-webkit-scrollbar-thumb:hover {
-    @apply bg-muted-foreground/40;
+    @apply bg-muted-foreground/35;
+    background-clip: content-box;
+  }
+
+  /* Honour the OS setting rather than shipping motion nobody asked for. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
 
 @layer components {
-  /* Glassmorphism surfaces */
+  /*
+   * The default surface: solid, bordered, barely shadowed. Depth is carried by
+   * the border and the background step, not by blur — so a page of ten cards
+   * still reads as a hierarchy instead of ten competing panes.
+   */
+  .surface {
+    @apply rounded-xl border border-border bg-card;
+    box-shadow: var(--shadow-card);
+  }
+
+  /* A recessed panel for content nested inside a surface. */
+  .surface-muted {
+    @apply rounded-lg border border-border/70;
+    background-color: hsl(var(--elevated));
+  }
+
+  .surface-interactive {
+    @apply transition-colors duration-200;
+  }
+  .surface-interactive:hover {
+    @apply border-border;
+    background-color: hsl(var(--elevated));
+  }
+
+  /*
+   * Translucency is now reserved for surfaces that genuinely float over
+   * content: the sidebar, the top bar and dialogs.
+   */
   .glass {
-    @apply border border-white/[0.06] bg-white/[0.55] shadow-glass backdrop-blur-xl;
-  }
-  .dark .glass {
-    @apply bg-white/[0.04];
+    @apply border border-border bg-background/85 backdrop-blur-xl;
   }
 
-  .glass-hover {
-    @apply transition-colors duration-300 hover:border-primary/30 hover:bg-white/[0.65];
-  }
-  .dark .glass-hover:hover {
-    @apply bg-white/[0.07];
-  }
-
-  /* Ambient aurora backdrop */
-  .aurora {
+  /* One faint wash so the page is not flat. Static, and off in light mode. */
+  .ambient {
     position: fixed;
     inset: 0;
     z-index: -1;
-    overflow: hidden;
     pointer-events: none;
+    opacity: 0;
   }
-  .aurora::before,
-  .aurora::after {
-    content: "";
-    position: absolute;
-    border-radius: 9999px;
-    filter: blur(120px);
-    opacity: 0.35;
-  }
-  .aurora::before {
-    width: 42vw;
-    height: 42vw;
-    top: -12vw;
-    left: -8vw;
-    background: radial-gradient(circle, #8b5cf6, transparent 65%);
-    animation: aurora-drift 24s ease-in-out infinite alternate;
-  }
-  .aurora::after {
-    width: 38vw;
-    height: 38vw;
-    bottom: -10vw;
-    right: -6vw;
-    background: radial-gradient(circle, #22d3ee, transparent 65%);
-    animation: aurora-drift 30s ease-in-out infinite alternate-reverse;
-  }
-  html:not(.dark) .aurora::before,
-  html:not(.dark) .aurora::after {
-    opacity: 0.16;
-  }
-
-  @keyframes aurora-drift {
-    from {
-      transform: translate3d(0, 0, 0) scale(1);
-    }
-    to {
-      transform: translate3d(6vw, 4vw, 0) scale(1.15);
-    }
-  }
-
-  .text-gradient {
-    @apply bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent;
+  .dark .ambient {
+    opacity: 1;
+    background:
+      radial-gradient(60rem 30rem at 12% -10%, hsl(256 84% 70% / 0.07), transparent 70%),
+      radial-gradient(45rem 28rem at 95% 0%, hsl(200 85% 60% / 0.05), transparent 70%);
   }
 
   .tabular {
     font-variant-numeric: tabular-nums;
+  }
+
+  /* Small uppercase label used above dense groups of data. */
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-wider text-muted-foreground;
+  }
+
+  /* Focus ring applied consistently to custom interactive elements. */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
 }
