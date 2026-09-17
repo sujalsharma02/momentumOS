@@ -64,9 +64,13 @@ export function MusicCard() {
         </Select>
       </CardHeader>
       <CardContent className="flex flex-1 items-center gap-4">
-        <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-border">
-          <img src={`https://i.ytimg.com/vi/${current.id}/hqdefault.jpg`} alt="" className="h-full w-full object-cover" loading="lazy" />
-          {playing && <span className="absolute inset-0 bg-black/30" />}
+        <div
+          className={cn(
+            "flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-border bg-secondary text-muted-foreground transition-colors",
+            playing && "border-primary/40 bg-accent text-primary",
+          )}
+        >
+          <Music4 className="h-6 w-6" />
         </div>
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold">{current.title}</div>
