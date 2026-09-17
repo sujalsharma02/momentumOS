@@ -1,5 +1,5 @@
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { Keyboard, Menu, Moon, ShieldCheck, Sun, Volume2, VolumeX, X } from "lucide-react";
+import { Keyboard, Menu, Moon, Pause, Play, ShieldCheck, Sun, Volume2, VolumeX, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { activeNavItem, NAV_ITEMS } from "@/components/layout/nav";
@@ -12,6 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useMusic } from "@/context/MusicContext";
 import { useSettings } from "@/context/SettingsContext";
 import { useNow } from "@/hooks/useNow";
 import { SecurityDialog } from "@/features/auth/SecurityDialog";
@@ -84,6 +85,7 @@ function MobileNav() {
 
 export function TopBar() {
   const { settings, toggleTheme, toggleSound } = useSettings();
+  const music = useMusic();
   const now = useNow(1000);
   const location = useLocation();
   const [helpOpen, setHelpOpen] = useState(false);
@@ -119,6 +121,16 @@ export function TopBar() {
           </span>
 
           <div className="flex items-center gap-0.5">
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={music.toggle}
+              className={music.playing ? "text-primary" : undefined}
+              aria-label={music.playing ? `Pause ${music.station.title}` : `Play ${music.station.title}`}
+              title={music.station.title}
+            >
+              {music.playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            </Button>
             <Button
               variant="ghost"
               size="icon-sm"

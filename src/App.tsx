@@ -3,6 +3,7 @@ import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthProvider } from "@/context/AuthContext";
 import { DataProvider } from "@/context/DataContext";
+import { MusicProvider } from "@/context/MusicContext";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { CommandCenterPage } from "@/features/dashboard/CommandCenterPage";
 import { FocusPage } from "@/features/focus/FocusPage";
@@ -32,6 +33,7 @@ export default function App() {
       <AuthProvider>
         <LockGate>
           <DataProvider>
+            <MusicProvider>
             <HashRouter>
           <Routes>
             <Route element={<AppLayout />}>
@@ -67,6 +69,7 @@ export default function App() {
             </Route>
           </Routes>
             </HashRouter>
+            </MusicProvider>
           </DataProvider>
         </LockGate>
       </AuthProvider>
