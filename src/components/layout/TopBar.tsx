@@ -111,10 +111,10 @@ export function TopBar() {
         <div className="flex h-12 items-center gap-2 px-3 sm:px-5">
           <MobileNav />
           <div className="min-w-0 flex-1">
-            <div className="truncate text-sm font-medium">{currentPage?.label ?? "Momentum OS"}</div>
+            <div className="truncate font-mono text-xs uppercase tracking-[0.14em]">{currentPage?.label ?? "Momentum OS"}</div>
           </div>
 
-          <span className="tabular hidden text-xs text-muted-foreground sm:block">
+          <span className="tabular hidden font-mono text-xs text-muted-foreground sm:block">
             {now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" })}
             <span className="mx-1.5 text-border">|</span>
             {now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}

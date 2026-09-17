@@ -7,7 +7,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ['"Inter Variable"', "Inter", "system-ui", "-apple-system", '"Segoe UI"', "sans-serif"],
-        mono: ['"JetBrains Mono"', "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        mono: ['"IBM Plex Mono"', "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        display: ["Anton", "Impact", '"Arial Narrow Bold"', "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",

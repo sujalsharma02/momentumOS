@@ -10,39 +10,39 @@
    * sit a step brighter than the page without glowing.
    */
   :root {
-    --background: 240 20% 98%;
-    --foreground: 240 12% 10%;
+    --background: 40 23% 93%;
+    --foreground: 0 0% 6%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 240 12% 10%;
-    --elevated: 240 20% 96%;
+    --card: 40 30% 96%;
+    --card-foreground: 0 0% 6%;
+    --elevated: 40 20% 89%;
 
-    --primary: 256 74% 56%;
+    --primary: 13 88% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 12% 94%;
-    --secondary-foreground: 240 10% 16%;
+    --secondary: 40 15% 86%;
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 240 12% 94%;
-    --muted-foreground: 240 6% 42%;
+    --muted: 40 15% 86%;
+    --muted-foreground: 0 0% 38%;
 
-    --accent: 256 70% 95%;
-    --accent-foreground: 256 60% 38%;
+    --accent: 13 88% 92%;
+    --accent-foreground: 13 80% 35%;
 
     --destructive: 0 68% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 10% 88%;
-    --input: 240 10% 86%;
-    --ring: 256 74% 56%;
+    --border: 0 0% 12%;
+    --input: 0 0% 40%;
+    --ring: 13 88% 53%;
 
-    --radius: 0.625rem;
+    --radius: 0rem;
 
-    --chart-grid: #e4e3e8;
-    --chart-axis: #7b7a85;
+    --chart-grid: #d9d3c4;
+    --chart-axis: #6b6b6b;
 
-    --shadow-card: 0 1px 2px rgb(16 16 24 / 0.05), 0 1px 3px rgb(16 16 24 / 0.04);
-    --shadow-raised: 0 4px 12px rgb(16 16 24 / 0.08), 0 1px 3px rgb(16 16 24 / 0.05);
+    --shadow-card: none;
+    --shadow-raised: 4px 4px 0 hsl(0 0% 6%);
   }
 
   /*
@@ -50,37 +50,37 @@
    * elevation steps, so depth comes from value rather than blur and glow.
    */
   .dark {
-    --background: 228 16% 7%;
-    --foreground: 225 16% 95%;
+    --background: 0 0% 4%;
+    --foreground: 40 28% 88%;
 
-    --card: 228 14% 10%;
-    --card-foreground: 225 16% 95%;
-    --elevated: 228 13% 13%;
+    --card: 0 0% 6%;
+    --card-foreground: 40 28% 88%;
+    --elevated: 0 0% 10%;
 
-    --primary: 256 84% 70%;
-    --primary-foreground: 228 20% 8%;
+    --primary: 13 88% 53%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 228 12% 16%;
-    --secondary-foreground: 225 14% 90%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 40 20% 82%;
 
-    --muted: 228 12% 16%;
-    --muted-foreground: 226 9% 62%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 40 8% 58%;
 
-    --accent: 256 40% 20%;
-    --accent-foreground: 256 84% 84%;
+    --accent: 13 60% 16%;
+    --accent-foreground: 13 90% 70%;
 
-    --destructive: 0 70% 62%;
+    --destructive: 0 70% 58%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 228 11% 19%;
-    --input: 228 11% 22%;
-    --ring: 256 84% 70%;
+    --border: 0 0% 18%;
+    --input: 0 0% 26%;
+    --ring: 13 88% 53%;
 
-    --chart-grid: #26262e;
-    --chart-axis: #83828e;
+    --chart-grid: #232323;
+    --chart-axis: #7f7a70;
 
-    --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow-raised: 0 8px 24px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+    --shadow-card: none;
+    --shadow-raised: 4px 4px 0 hsl(13 88% 53%);
   }
 
   * {
@@ -169,8 +169,8 @@
   .dark .ambient {
     opacity: 1;
     background:
-      radial-gradient(60rem 30rem at 12% -10%, hsl(256 84% 70% / 0.07), transparent 70%),
-      radial-gradient(45rem 28rem at 95% 0%, hsl(200 85% 60% / 0.05), transparent 70%);
+      radial-gradient(60rem 30rem at 12% -10%, hsl(13 88% 53% / 0.08), transparent 70%),
+      radial-gradient(45rem 28rem at 95% 0%, hsl(140 50% 40% / 0.05), transparent 70%);
   }
 
   .tabular {
@@ -179,7 +179,12 @@
 
   /* Small uppercase label used above dense groups of data. */
   .eyebrow {
-    @apply text-[11px] font-semibold uppercase tracking-wider text-muted-foreground;
+    @apply font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground;
+  }
+
+  /* Editorial display type: condensed, tight, all caps. */
+  .display {
+    @apply font-display uppercase leading-[0.9] tracking-tight;
   }
 
   /* Focus ring applied consistently to custom interactive elements. */

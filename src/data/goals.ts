@@ -18,7 +18,7 @@ export const GOAL_CATEGORY_META: Record<GoalCategory, GoalCategoryMeta> = {
     label: "Technical",
     description: "Depth in the things interviews actually probe.",
     icon: "BrainCircuit",
-    accent: "#7c6cf0",
+    accent: "#f04e23",
   },
   build: {
     label: "Building",

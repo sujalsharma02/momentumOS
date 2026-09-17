@@ -195,7 +195,7 @@ export interface CategoryMeta {
  * carry meaning rather than each storing its own styling.
  */
 export const CATEGORY_META: Record<BlockCategory, CategoryMeta> = {
-  "deep-work": { label: "Deep Work", icon: "Brain", accent: "#7c6cf0" },
+  "deep-work": { label: "Deep Work", icon: "Brain", accent: "#f04e23" },
   "job-search": { label: "Job Search", icon: "Send", accent: "#3987e5" },
   "interview-prep": { label: "Interview Prep", icon: "GraduationCap", accent: "#c98500" },
   learning: { label: "Learning", icon: "BookOpen", accent: "#199e70" },

@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 function Logo() {
   return (
     <div className="flex items-center gap-2.5">
-      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-        <span className="text-sm font-bold">M</span>
+      <div className="flex h-8 w-8 items-center justify-center bg-primary text-primary-foreground">
+        <span className="font-display text-base">M</span>
       </div>
       <div className="leading-tight">
-        <div className="text-sm font-semibold tracking-tight">Momentum OS</div>
+        <div className="font-display text-base uppercase tracking-wide">Momentum OS</div>
         <div className="text-[11px] text-muted-foreground">Career operating system</div>
       </div>
     </div>
@@ -47,9 +47,9 @@ function NavItemLink({ item, onNavigate }: { item: NavItem; onNavigate?: () => v
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(
-          "group flex items-center gap-2.5 rounded-md px-3 py-1.5 text-sm transition-colors",
+          "group flex items-center gap-2.5 px-3 py-1.5 font-mono text-[13px] transition-colors",
           isActive
-            ? "bg-accent font-medium text-foreground"
+            ? "bg-primary text-primary-foreground"
             : "text-muted-foreground hover:bg-elevated hover:text-foreground",
         )
       }

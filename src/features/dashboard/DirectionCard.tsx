@@ -17,7 +17,7 @@ export function DirectionCard() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle>Direction</CardTitle>
+        <CardTitle className="flex items-baseline gap-2"><span className="font-display text-lg text-primary">05</span>Direction</CardTitle>
         <Link to="/roadmap" className="text-xs text-muted-foreground hover:text-foreground">
           Roadmap
         </Link>

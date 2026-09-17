@@ -17,7 +17,7 @@ import { MILESTONE_STATUSES, type Milestone, type MilestoneStatus } from "@/type
 
 export const MILESTONE_STATUS_META: Record<MilestoneStatus, { label: string; accent: string }> = {
   done: { label: "Done", accent: "#0ca30c" },
-  active: { label: "In progress", accent: "#7c6cf0" },
+  active: { label: "In progress", accent: "#f04e23" },
   next: { label: "Next", accent: "#3987e5" },
   later: { label: "Later", accent: "#898791" },
 };

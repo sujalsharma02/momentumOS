@@ -54,7 +54,7 @@ export function QuickStatCard({ label, icon, accent, counter, target, step = 1, 
             </Button>
           </div>
         </div>
-        <div className="tabular mt-3 text-2xl font-bold">
+        <div className="display tabular mt-3 text-4xl">
           {value}
           {unit && <span className="ml-1 text-sm font-medium text-muted-foreground">{unit}</span>}
           <span className="ml-1.5 text-sm font-medium text-muted-foreground">/ {target}</span>

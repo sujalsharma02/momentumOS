@@ -77,10 +77,10 @@ export function CommandCenterPage() {
   return (
     <div className="space-y-4">
       {/* Top strip */}
-      <section className="surface flex flex-col gap-4 p-4 sm:p-5 lg:flex-row lg:items-center lg:justify-between">
+      <section className="surface flex flex-col gap-6 p-5 sm:p-7 lg:flex-row lg:items-end lg:justify-between">
         <div className="min-w-0">
-          <p className="text-xs text-muted-foreground">{formatLongDate(now)}</p>
-          <h1 className="mt-0.5 text-xl font-semibold tracking-tight sm:text-2xl">{greeting}.</h1>
+          <p className="eyebrow">{formatLongDate(now)}</p>
+          <h1 className="display mt-1 text-5xl sm:text-7xl">{greeting}.</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {currentBlock ? (
               <>
@@ -109,30 +109,30 @@ export function CommandCenterPage() {
         <div className="grid grid-cols-3 gap-x-5 gap-y-3 sm:grid-cols-5 lg:flex lg:gap-8">
           <div className="tabular">
             <div className="eyebrow">Time</div>
-            <div className="mt-0.5 text-lg font-semibold leading-none">
+            <div className="display mt-1 text-3xl">
               {now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })}
               <span className="text-xs text-muted-foreground">:{String(now.getSeconds()).padStart(2, "0")}</span>
             </div>
           </div>
           <div className="tabular">
             <div className="eyebrow">Streak</div>
-            <div className={cn("mt-0.5 flex items-center gap-1 text-lg font-semibold leading-none", streak > 0 && "text-orange-500")}>
+            <div className={cn("display mt-1 flex items-center gap-1 text-3xl", streak > 0 && "text-primary")}>
               <Flame className="h-4 w-4" /> {streak}
             </div>
           </div>
           <div className="tabular">
             <div className="eyebrow">Today</div>
-            <div className="mt-0.5 text-lg font-semibold leading-none">{completion}%</div>
+            <div className="display mt-1 text-3xl">{completion}%</div>
           </div>
           <div className="tabular">
             <div className="eyebrow">Goals</div>
-            <div className="mt-0.5 text-lg font-semibold leading-none">
+            <div className="display mt-1 text-3xl">
               {goalsMet}<span className="text-sm text-muted-foreground">/{dailyGoals.length}</span>
             </div>
           </div>
           <div className="tabular">
             <div className="eyebrow">Roadmap</div>
-            <div className="mt-0.5 text-lg font-semibold leading-none">{roadmapPct}%</div>
+            <div className="display mt-1 text-3xl">{roadmapPct}%</div>
           </div>
         </div>
       </section>
@@ -162,7 +162,7 @@ export function CommandCenterPage() {
         {/* A. Today */}
         <Card className="flex flex-col">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle>Today</CardTitle>
+            <CardTitle className="flex items-baseline gap-2"><span className="font-display text-lg text-primary">01</span>Today</CardTitle>
             <CardLink to="/today">Open plan</CardLink>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-3">
@@ -216,7 +216,7 @@ export function CommandCenterPage() {
         {/* B. Career pipeline */}
         <Card className="flex flex-col">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle>Career pipeline</CardTitle>
+            <CardTitle className="flex items-baseline gap-2"><span className="font-display text-lg text-primary">02</span>Career pipeline</CardTitle>
             <CardLink to="/tracker">Tracker</CardLink>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-3">
@@ -283,7 +283,7 @@ export function CommandCenterPage() {
         {/* C. Building */}
         <Card className="flex flex-col">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle>Building</CardTitle>
+            <CardTitle className="flex items-baseline gap-2"><span className="font-display text-lg text-primary">03</span>Building</CardTitle>
             <CardLink to="/projects">Projects</CardLink>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-3">
@@ -339,12 +339,12 @@ export function CommandCenterPage() {
         {/* D. Skill growth */}
         <Card className="flex flex-col">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle>Skill growth</CardTitle>
+            <CardTitle className="flex items-baseline gap-2"><span className="font-display text-lg text-primary">04</span>Skill growth</CardTitle>
             <CardLink to="/prep">Interview prep</CardLink>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-3">
             <div className="flex items-center gap-4">
-              <ProgressRing value={skills.readiness} size={72} strokeWidth={6} color="#7c6cf0" />
+              <ProgressRing value={skills.readiness} size={72} strokeWidth={6} color="hsl(var(--primary))" />
               <div className="text-sm">
                 <div className="font-semibold">Interview readiness</div>
                 <div className="mt-0.5 text-xs text-muted-foreground">
@@ -389,7 +389,7 @@ export function CommandCenterPage() {
         {/* F. Daily goals */}
         <Card className="flex flex-col">
           <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
-            <CardTitle>Daily goals</CardTitle>
+            <CardTitle className="flex items-baseline gap-2"><span className="font-display text-lg text-primary">06</span>Daily goals</CardTitle>
             <CardLink to="/goals">Goals</CardLink>
           </CardHeader>
           <CardContent className="flex-1">

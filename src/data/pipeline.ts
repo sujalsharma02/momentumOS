@@ -87,7 +87,7 @@ export interface LogCategoryMeta {
 
 export const LOG_CATEGORY_META: Record<LogCategory, LogCategoryMeta> = {
   bug: { label: "Bug fixed", icon: "Bug", accent: "#e66767" },
-  architecture: { label: "Architecture", icon: "Network", accent: "#7c6cf0" },
+  architecture: { label: "Architecture", icon: "Network", accent: "#f04e23" },
   incident: { label: "Incident", icon: "Siren", accent: "#d95926" },
   performance: { label: "Performance", icon: "Gauge", accent: "#c98500" },
   ai: { label: "AI experiment", icon: "Sparkles", accent: "#9085e9" },

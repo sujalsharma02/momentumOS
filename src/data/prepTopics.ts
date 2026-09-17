@@ -30,7 +30,7 @@ export const DOMAIN_META: Record<PrepDomain, DomainMeta> = {
     label: "AI Engineering",
     description: "Building with models in production, not demos.",
     icon: "Sparkles",
-    accent: "#7c6cf0",
+    accent: "#f04e23",
   },
 };
 
