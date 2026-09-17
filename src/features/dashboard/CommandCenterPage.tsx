@@ -1,4 +1,4 @@
-import { ArrowRight, Check, Flame } from "lucide-react";
+import { ArrowRight, Check, Flame, Quote } from "lucide-react";
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { DynamicIcon } from "@/components/shared/DynamicIcon";
@@ -11,12 +11,16 @@ import { CATEGORY_META } from "@/data/defaultPlan";
 import { LOG_CATEGORY_META, STATUS_META } from "@/data/pipeline";
 import { PREP_TOPICS } from "@/data/prepTopics";
 import { PROJECT_STATUS_META } from "@/data/projects";
+import { QUOTES } from "@/data/quotes";
 import { useNow } from "@/hooks/useNow";
-import { formatLongDate, formatMediumDate, formatShortDay, todayISO } from "@/lib/dates";
+import { dayOfYear, formatLongDate, formatMediumDate, formatShortDay, todayISO } from "@/lib/dates";
 import { currentStreak, dailyGoalsMet, dayCompletion, getLog, goalsForPeriod, pipelineStats, skillStats } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import type { PlanBlock } from "@/types";
 import { DirectionCard } from "@/features/dashboard/DirectionCard";
+import { MiniCalendar } from "@/features/dashboard/MiniCalendar";
+import { MusicCard } from "@/features/dashboard/MusicCard";
+import { QuickStatCard } from "@/features/dashboard/QuickStatCard";
 import { STRENGTH_META } from "@/features/prep/TopicDialog";
 
 function toMinutes(time: string): number {
@@ -68,6 +72,7 @@ export function CommandCenterPage() {
 
   const hour = now.getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const quote = QUOTES[dayOfYear(now) % QUOTES.length];
 
   return (
     <div className="space-y-4">
@@ -94,12 +99,19 @@ export function CommandCenterPage() {
               "Nothing scheduled. Pick one thing."
             )}
           </p>
+          <p className="mt-3 flex max-w-xl items-start gap-1.5 text-xs text-muted-foreground">
+            <Quote className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
+            <span>
+              {quote.text} <span className="text-muted-foreground/70">— {quote.author}</span>
+            </span>
+          </p>
         </div>
         <div className="grid grid-cols-3 gap-x-5 gap-y-3 sm:grid-cols-5 lg:flex lg:gap-8">
           <div className="tabular">
             <div className="eyebrow">Time</div>
             <div className="mt-0.5 text-lg font-semibold leading-none">
               {now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false })}
+              <span className="text-xs text-muted-foreground">:{String(now.getSeconds()).padStart(2, "0")}</span>
             </div>
           </div>
           <div className="tabular">
@@ -135,6 +147,16 @@ export function CommandCenterPage() {
           </Button>
         </div>
       )}
+
+      <section>
+        <h2 className="eyebrow mb-2">Log today</h2>
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+          <QuickStatCard label="Applications sent" icon="Send" accent="#3987e5" counter="applications" target={5} />
+          <QuickStatCard label="Problems solved" icon="Binary" accent="#9085e9" counter="dsa" target={2} />
+          <QuickStatCard label="Hours studied" icon="BookOpen" accent="#199e70" counter="studyHours" target={2} step={0.5} unit="h" />
+          <QuickStatCard label="Commits" icon="GitCommitHorizontal" accent="#d95926" counter="commits" target={1} />
+        </div>
+      </section>
 
       <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-3">
         {/* A. Today */}
@@ -405,6 +427,9 @@ export function CommandCenterPage() {
             )}
           </CardContent>
         </Card>
+
+        <MiniCalendar />
+        <MusicCard />
       </div>
     </div>
   );
