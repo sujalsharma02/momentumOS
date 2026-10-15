@@ -30,7 +30,9 @@ export function CloudSync() {
           return;
         }
         const local=readLocal();
-        if(!hasRemote) for(const [key,value] of Object.entries(local)) await requestData("PUT",{key,value});
+        for(const [key,value] of Object.entries(local)) {
+          if(!hasRemote || !(key in remote)) await requestData("PUT",{key,value});
+        }
         snapshot=serialise(readLocal());
         window.sessionStorage.setItem(BOOTSTRAP_FLAG,"1");
       } catch(error) { console.error("Momentum OS cloud sync did not start:",error); }
