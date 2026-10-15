@@ -4,7 +4,6 @@ import {
   clearSession,
   createLock,
   cryptoAvailable,
-  hasSession,
   lockoutRemaining,
   readLock,
   recordFailure,
@@ -40,12 +39,28 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 function initialStatus(record: LockRecord | null): AuthStatus {
   if (!cryptoAvailable()) return "unsupported";
   if (!record) return "setup";
-  return hasSession() ? "unlocked" : "locked";
+  return "locked";
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [record, setRecord] = useState<LockRecord | null>(() => readLock());
   const [status, setStatus] = useState<AuthStatus>(() => initialStatus(readLock()));
+
+  // Trust the server-side signed cookie, not the browser's local-only session flag.
+  useEffect(() => {
+    let active = true;
+    void fetch("/api/session", { cache: "no-store" })
+      .then((response) => {
+        if (!active) return;
+        if (response.ok) setStatus("unlocked");
+        else if (record) setStatus("locked");
+        else setStatus("setup");
+      })
+      .catch(() => {
+        if (active) setStatus(record ? "locked" : "setup");
+      });
+    return () => { active = false; };
+  }, [record]);
 
   // Another tab locking or changing the password should lock this one too.
   useEffect(() => {
