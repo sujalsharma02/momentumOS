@@ -5,7 +5,6 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/context/AuthContext";
 
-const MIN_PASSWORD = 8;
 const DEFAULT_USERNAME = "sujalsharma02";
 
 function Shell({ children }: { children: React.ReactNode }) {
@@ -28,61 +27,10 @@ function Shell({ children }: { children: React.ReactNode }) {
   );
 }
 
-function SetupForm() {
-  const { setup } = useAuth();
-  const [username, setUsername] = useState(DEFAULT_USERNAME);
-  const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-
-  const onSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    setError(null);
-    if (!username.trim()) return setError("Choose a username.");
-    if (password.length < MIN_PASSWORD) return setError(`Use at least ${MIN_PASSWORD} characters.`);
-    if (password !== confirm) return setError("Passwords do not match.");
-    setBusy(true);
-    try {
-      await setup(username, password);
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Cloud sign-in failed.");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <form onSubmit={onSubmit} className="grid gap-4">
-      <div>
-        <h1 className="text-base font-semibold">Set up your lock</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Use the same username and password configured in Vercel. The cloud verifies your login
-          and grants a secure session before your synced data can load.
-        </p>
-      </div>
-      <Field label="Username">
-        <Input autoFocus autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} />
-      </Field>
-      <Field label="Password" hint={`At least ${MIN_PASSWORD} characters and must match MOMENTUM_LOGIN_PASSWORD in Vercel.`}>
-        <Input type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      </Field>
-      <Field label="Confirm password">
-        <Input type="password" autoComplete="new-password" value={confirm} onChange={(e) => setConfirm(e.target.value)} />
-      </Field>
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <Button type="submit" disabled={busy}>
-        <Lock /> {busy ? "Saving…" : "Create lock"}
-      </Button>
-    </form>
-  );
-}
-
 function UnlockForm() {
   const { unlock, username: storedUsername } = useAuth();
   const [username, setUsername] = useState(storedUsername ?? DEFAULT_USERNAME);
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -91,7 +39,7 @@ function UnlockForm() {
     setBusy(true);
     setError(null);
     try {
-      const problem = await unlock(username, password, remember);
+      const problem = await unlock(username, password, false);
       if (problem) {
         setError(problem);
         setPassword("");
@@ -119,15 +67,6 @@ function UnlockForm() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </Field>
-      <label className="flex items-center gap-2 text-xs text-muted-foreground">
-        <input
-          type="checkbox"
-          checked={remember}
-          onChange={(e) => setRemember(e.target.checked)}
-          className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
-        />
-        Keep this session in this tab
-      </label>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={busy || !password}>
         {busy ? "Checking…" : "Unlock"}
