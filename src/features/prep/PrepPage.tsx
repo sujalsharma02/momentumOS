@@ -11,6 +11,7 @@ import { skillStats } from "@/lib/stats";
 import { cn } from "@/lib/utils";
 import { PREP_DOMAINS, type PrepDomain, type PrepTopic } from "@/types";
 import { STRENGTH_META, TopicDialog } from "@/features/prep/TopicDialog";
+import { BuildPlan } from "@/features/prep/BuildPlan";
 
 type Filter = "all" | PrepDomain | "weak" | "stale";
 
@@ -68,6 +69,8 @@ export function PrepPage() {
           detail={`${Object.values(prep.progress).reduce((n, p) => n + p.questions.filter((q) => q.answered).length, 0)} answered`}
         />
       </StatStrip>
+
+      <BuildPlan />
 
       <div className="mb-4 flex flex-wrap gap-1.5">
         {(

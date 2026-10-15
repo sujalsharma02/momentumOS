@@ -282,15 +282,6 @@ export function FocusPage() {
                   ))}
                 </ul>
               )}
-              {todayMinutes > 0 && (
-                <button
-                  type="button"
-                  className="mt-3 text-xs text-primary underline-offset-2 hover:underline"
-                  onClick={() => dayLogs.adjustCounter("studyHours", Math.round((todayMinutes / 60) * 2) / 2)}
-                >
-                  Add {Math.round((todayMinutes / 60) * 2) / 2}h to today's study hours
-                </button>
-              )}
             </CardContent>
           </Card>
         </div>

@@ -329,7 +329,6 @@ export function TodayPage() {
               <CounterRow counter="applications" label="Applications" />
               <CounterRow counter="recruiters" label="Recruiter conversations" />
               <CounterRow counter="dsa" label="Problems solved" />
-              <CounterRow counter="studyHours" label="Study hours" step={0.5} unit="h" />
               <CounterRow counter="commits" label="Commits" />
             </CardContent>
           </Card>
