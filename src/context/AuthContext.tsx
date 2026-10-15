@@ -61,6 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setup = useCallback(async (username: string, password: string) => {
+    const response = await fetch("/api/session", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ username: username.trim(), password }),
+    });
+    if (!response.ok) {
+      const result = await response.json().catch(() => ({}));
+      throw new Error(result.error ?? "Cloud sign-in failed. Check your Vercel environment variables.");
+    }
     const created = await createLock(username, password);
     setRecord(created);
     clearFailures();
@@ -80,6 +89,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           ? `Too many attempts. Try again in ${Math.ceil(lockout / 1000)}s.`
           : "Wrong username or password.";
       }
+      const response = await fetch("/api/session", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ username: username.trim(), password }),
+      });
+      if (!response.ok) {
+        const result = await response.json().catch(() => ({}));
+        return result.error ?? "Cloud sign-in failed. Check your Vercel environment variables.";
+      }
       clearFailures();
       startSession(remember);
       setStatus("unlocked");
@@ -90,6 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const lock = useCallback(() => {
     clearSession();
+    void fetch("/api/session", { method: "DELETE" }).catch(() => undefined);
     setStatus("locked");
   }, []);
 
