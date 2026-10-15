@@ -144,7 +144,7 @@ export function BuildPlan() {
     if (timer.running && timer.startedAt) {
       setTimer({ ...timer, accumulatedSeconds: 0, startedAt: Date.now(), running: true });
     } else {
-      setTimer({ topicId: topic?.id ?? "", accumulatedSeconds: 0, startedAt: null, running: false });
+      setTimer(EMPTY_TIMER);
     }
     setNow(Date.now());
   };
