@@ -69,7 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const latest = readLock();
       setRecord(latest);
       if (!latest) setStatus("setup");
-      else if (!hasSession()) setStatus("locked");
+      else setStatus("locked");
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
