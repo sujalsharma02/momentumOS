@@ -80,7 +80,7 @@ function SetupForm() {
 
 function UnlockForm() {
   const { unlock, username: storedUsername } = useAuth();
-  const [username, setUsername] = useState(storedUsername ?? "");
+  const [username, setUsername] = useState(storedUsername ?? DEFAULT_USERNAME);
   const [password, setPassword] = useState("");
   const [remember, setRemember] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -104,8 +104,8 @@ function UnlockForm() {
   return (
     <form onSubmit={onSubmit} className="grid gap-4">
       <div>
-        <h1 className="text-base font-semibold">Locked</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Sign in to continue.</p>
+        <h1 className="text-base font-semibold">Sign in to Momentum OS</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Use your cloud login credentials configured in Vercel.</p>
       </div>
       <Field label="Username">
         <Input autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} />
@@ -126,7 +126,7 @@ function UnlockForm() {
           onChange={(e) => setRemember(e.target.checked)}
           className="h-3.5 w-3.5 accent-[hsl(var(--primary))]"
         />
-        Stay signed in on this device for 30 days
+        Keep this session in this tab
       </label>
       {error && <p className="text-sm text-destructive">{error}</p>}
       <Button type="submit" disabled={busy || !password}>
@@ -161,7 +161,7 @@ export function LockGate({ children }: { children: React.ReactNode }) {
 
   return (
     <Shell>
-      {status === "setup" && <SetupForm />}
+      {status === "setup" && <UnlockForm />}
       {status === "locked" && <UnlockForm />}
       {status === "unsupported" && <Unsupported />}
     </Shell>
