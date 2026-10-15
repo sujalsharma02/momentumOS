@@ -57,14 +57,14 @@ function SetupForm() {
       <div>
         <h1 className="text-base font-semibold">Set up your lock</h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          This password is required every time the app opens. It is hashed and kept only in this
-          browser — nowhere else.
+          Use the same username and password configured in Vercel. The cloud verifies your login
+          and grants a secure session before your synced data can load.
         </p>
       </div>
       <Field label="Username">
         <Input autoFocus autoComplete="username" value={username} onChange={(e) => setUsername(e.target.value)} />
       </Field>
-      <Field label="Password" hint={`At least ${MIN_PASSWORD} characters. There is no reset: forgetting it means clearing site data.`}>
+      <Field label="Password" hint={`At least ${MIN_PASSWORD} characters and must match MOMENTUM_LOGIN_PASSWORD in Vercel.`}>
         <Input type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} />
       </Field>
       <Field label="Confirm password">
