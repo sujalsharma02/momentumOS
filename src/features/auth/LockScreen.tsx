@@ -45,6 +45,8 @@ function SetupForm() {
     setBusy(true);
     try {
       await setup(username, password);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Cloud sign-in failed.");
     } finally {
       setBusy(false);
     }
