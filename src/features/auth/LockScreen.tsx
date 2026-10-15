@@ -1,4 +1,4 @@
-import { Lock, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
