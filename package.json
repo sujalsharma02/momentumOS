@@ -24,7 +24,8 @@
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.27.0",
     "recharts": "^2.13.0",
-    "tailwind-merge": "^2.5.3"
+    "tailwind-merge": "^2.5.3",
+    "@neondatabase/serverless": "^1.2.0"
   },
   "devDependencies": {
     "@types/canvas-confetti": "^1.6.4",
