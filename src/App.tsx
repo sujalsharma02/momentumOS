@@ -17,6 +17,7 @@ import { TodayPage } from "@/features/today/TodayPage";
 import { TrackerPage } from "@/features/tracker/TrackerPage";
 import { WhyPage } from "@/features/why/WhyPage";
 import { LockGate } from "@/features/auth/LockScreen";
+import { CloudSync } from "@/components/CloudSync";
 
 // Charts are the heaviest dependency; only fetched when Statistics is opened.
 const StatsPage = lazy(() =>
@@ -33,6 +34,7 @@ export default function App() {
       <AuthProvider>
         <LockGate>
           <DataProvider>
+            <CloudSync />
             <MusicProvider>
             <HashRouter>
           <Routes>
