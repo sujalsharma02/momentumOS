@@ -128,12 +128,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const changePassword = useCallback(
-    async (current: string, next: string) => {
+    async (current: string, _next: string) => {
       if (!record) return "No lock is configured.";
       if (!(await verify(record, record.username, current))) return "Current password is wrong.";
-      const created = await createLock(record.username, next);
-      setRecord(created);
-      return null;
+      return "The cloud password is managed by MOMENTUM_LOGIN_PASSWORD in Vercel. Update that variable and redeploy before changing your app password.";
     },
     [record],
   );
