@@ -56,10 +56,10 @@ async function createPresignedUrl({ key, method }) {
   if (endpoint.protocol !== "https:") throw new Error("S3 endpoint must use HTTPS.");
 
   const now = new Date();
-  const amzDate = now.toISOString().replace(/[:-]|\\.\\d{3}/g, "");
+  const amzDate = now.toISOString().slice(0, 19).replaceAll("-", "").replaceAll(":", "") + "Z";
   const dateStamp = amzDate.slice(0, 8);
   const host = endpoint.host;
-  const basePath = endpoint.pathname.replace(/\\/$/, "");
+  const basePath = endpoint.pathname.endsWith("/") ? endpoint.pathname.slice(0, -1) : endpoint.pathname;
   const canonicalUri = basePath + "/" + encode(bucket) + "/" + key.split("/").map(encode).join("/");
   const scope = `${dateStamp}/${region}/s3/aws4_request`;
   const params = {
@@ -73,8 +73,9 @@ async function createPresignedUrl({ key, method }) {
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([name, value]) => `${encode(name)}=${encode(value)}`)
     .join("&");
-  const canonicalRequest = [method, canonicalUri, canonicalQuery, `host:${host}\\n`, "host", "UNSIGNED-PAYLOAD"].join("\\n");
-  const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, sha256(canonicalRequest)].join("\\n");
+  const canonicalHeaders = `host:${host}\n`;
+  const canonicalRequest = [method, canonicalUri, canonicalQuery, canonicalHeaders, "host", "UNSIGNED-PAYLOAD"].join("\n");
+  const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, sha256(canonicalRequest)].join("\n");
   const dateKey = hmac("AWS4" + secretKey, dateStamp);
   const regionKey = hmac(dateKey, region);
   const serviceKey = hmac(regionKey, "s3");
@@ -102,7 +103,8 @@ export default async function handler(req, res) {
   if (!["put", "get"].includes(action)) {
     return res.status(400).json({ error: "action must be put or get." });
   }
-  if (action === "put" && !/^(image\\/(png|jpeg|webp|gif)|application\\/pdf|text\\/plain|application\\/json)$/.test(contentType)) {
+  const allowedContentType = new RegExp("^(image/(png|jpeg|webp|gif)|application/pdf|text/plain|application/json)$");
+  if (action === "put" && !allowedContentType.test(contentType)) {
     return res.status(415).json({ error: "Unsupported file type." });
   }
 
@@ -113,9 +115,9 @@ export default async function handler(req, res) {
   if (!objectKey) return res.status(403).json({ error: "You cannot access that object." });
 
   try {
-    const method = action === "put" ? "PUT" : "GET";
-    const url = await createPresignedUrl({ key: objectKey, method });
-    return res.status(200).json({ url, key: objectKey, method, expiresIn: 300 });
+    const signedMethod = action === "put" ? "PUT" : "GET";
+    const url = await createPresignedUrl({ key: objectKey, method: signedMethod });
+    return res.status(200).json({ url, key: objectKey, method: signedMethod, expiresIn: 300 });
   } catch (error) {
     console.error("Object storage signing failed:", error);
     return res.status(500).json({ error: "Could not create a signed URL. Check the S3-compatible storage environment variables." });
