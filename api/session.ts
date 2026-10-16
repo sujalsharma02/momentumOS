@@ -1,4 +1,4 @@
-import { clearSessionCookie, credentialsMatch, makeSession, readSession, setSessionCookie } from "../api-lib/auth";
+import { clearSessionCookie, credentialsMatch, makeSession, readSession, setSessionCookie } from "../api-lib/auth.js";
 export default async function handler(req: any, res: any) {
   res.setHeader("Cache-Control", "no-store");
   if (req.method === "GET") {
