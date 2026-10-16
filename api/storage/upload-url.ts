@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { readSession } from "../../api-lib/auth";
-import { createPresignedUrl } from "../../api-lib/s3";
+import { readSession } from "../../api-lib/auth.js";
+import { createPresignedUrl } from "../../api-lib/s3.js";
 export default async function handler(req: any,res: any) {
   res.setHeader("Cache-Control","no-store");
   if (req.method!=="POST") { res.setHeader("Allow","POST"); return res.status(405).json({error:"Method not allowed."}); }
