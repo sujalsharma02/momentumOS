@@ -14,4 +14,5 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm install
+      - run: npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --skipLibCheck --types node api/session.ts api/data.ts api/storage/upload-url.ts
       - run: npm run build
