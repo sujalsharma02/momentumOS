@@ -1,5 +1,5 @@
-import { readSession } from "../api-lib/auth";
-import { ensureDataTable, getSql } from "../api-lib/db";
+import { readSession } from "../api-lib/auth.js";
+import { ensureDataTable, getSql } from "../api-lib/db.js";
 const ALLOWED_KEYS = new Set(["dayLogs","applications","notes","prepNotes","prepProgress","projects","engineeringLog","roadmap","planBlocks","goals","focusSessions","reasons","celebratedOn","settings","skillBuildRoadmaps","skillStudyTimer"]);
 export default async function handler(req: any, res: any) {
   res.setHeader("Cache-Control","no-store");
