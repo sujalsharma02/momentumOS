@@ -1,53 +1,23 @@
-import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomUUID } from "node:crypto";
+import { readSession } from "../../api-lib/sessionStore.js";
 
-const COOKIE_NAME = "momentum_session";
-function sessionSecret() {
-  const value = process.env.MOMENTUM_SESSION_SECRET;
-  if (!value || value.length < 32) throw new Error("MOMENTUM_SESSION_SECRET must be at least 32 characters.");
-  return value;
-}
-function signSession(payload) {
-  return createHmac("sha256", sessionSecret()).update(payload).digest("base64url");
-}
-function readSession(req) {
-  try {
-    const raw = String(req.headers?.cookie ?? "")
-      .split(";")
-      .map((part) => part.trim())
-      .find((part) => part.startsWith(COOKIE_NAME + "="))
-      ?.slice(COOKIE_NAME.length + 1);
-    if (!raw) return null;
-    const [payload, signature] = raw.split(".");
-    if (!payload || !signature) return null;
-    const actual = Buffer.from(signature);
-    const expected = Buffer.from(signSession(payload));
-    if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) return null;
-    const session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    return session.sub && session.exp && session.exp > Math.floor(Date.now() / 1000)
-      ? session.sub
-      : null;
-  } catch {
-    return null;
-  }
-}
-
-function required(name) {
+function required(name: string) {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not configured.`);
   return value;
 }
-function hmac(key, value) {
+function hmac(key: Buffer | string, value: string) {
   return createHmac("sha256", key).update(value, "utf8").digest();
 }
-function encode(value) {
+function encode(value: string) {
   return encodeURIComponent(value).replace(/[!'()*]/g, (character) =>
     "%" + character.charCodeAt(0).toString(16).toUpperCase()
   );
 }
-function sha256(value) {
+function sha256(value: string) {
   return createHash("sha256").update(value, "utf8").digest("hex");
 }
-async function createPresignedUrl({ key, method }) {
+async function createPresignedUrl(input: { key: string; method: "PUT" | "GET" }) {
   const endpoint = new URL(required("AWS_ENDPOINT_URL_S3"));
   const bucket = required("AWS_S3_BUCKET");
   const region = required("AWS_REGION");
@@ -60,9 +30,9 @@ async function createPresignedUrl({ key, method }) {
   const dateStamp = amzDate.slice(0, 8);
   const host = endpoint.host;
   const basePath = endpoint.pathname.endsWith("/") ? endpoint.pathname.slice(0, -1) : endpoint.pathname;
-  const canonicalUri = basePath + "/" + encode(bucket) + "/" + key.split("/").map(encode).join("/");
+  const canonicalUri = basePath + "/" + encode(bucket) + "/" + input.key.split("/").map(encode).join("/");
   const scope = `${dateStamp}/${region}/s3/aws4_request`;
-  const params = {
+  const params: Record<string, string> = {
     "X-Amz-Algorithm": "AWS4-HMAC-SHA256",
     "X-Amz-Credential": `${accessKey}/${scope}`,
     "X-Amz-Date": amzDate,
@@ -74,7 +44,7 @@ async function createPresignedUrl({ key, method }) {
     .map(([name, value]) => `${encode(name)}=${encode(value)}`)
     .join("&");
   const canonicalHeaders = `host:${host}\n`;
-  const canonicalRequest = [method, canonicalUri, canonicalQuery, canonicalHeaders, "host", "UNSIGNED-PAYLOAD"].join("\n");
+  const canonicalRequest = [input.method, canonicalUri, canonicalQuery, canonicalHeaders, "host", "UNSIGNED-PAYLOAD"].join("\n");
   const stringToSign = ["AWS4-HMAC-SHA256", amzDate, scope, sha256(canonicalRequest)].join("\n");
   const dateKey = hmac("AWS4" + secretKey, dateStamp);
   const regionKey = hmac(dateKey, region);
@@ -87,13 +57,20 @@ async function createPresignedUrl({ key, method }) {
   return url.toString();
 }
 
-export default async function handler(req, res) {
+export default async function handler(req: any, res: any) {
   res.setHeader("Cache-Control", "no-store");
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed." });
   }
-  const username = readSession(req);
+
+  let username: string | null;
+  try {
+    username = await readSession(req);
+  } catch (error) {
+    console.error("Session validation failed in storage API:", error);
+    return res.status(500).json({ error: "Could not validate the login session." });
+  }
   if (!username) return res.status(401).json({ error: "Sign in before accessing files." });
 
   const { fileName, contentType, action, key: requestedKey } = req.body ?? {};
