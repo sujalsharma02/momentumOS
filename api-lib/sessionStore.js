@@ -1,4 +1,4 @@
-import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
+import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { neon } from "@neondatabase/serverless";
 
 const COOKIE_NAME = "momentum_session";
@@ -19,6 +19,8 @@ async function ensureSessionTable(sql) {
     expires_at TIMESTAMPTZ NOT NULL,
     revoked_at TIMESTAMPTZ
   )`;
+  await sql`CREATE INDEX IF NOT EXISTS momentum_login_sessions_username_idx
+    ON momentum_login_sessions (username, created_at DESC)`;
 }
 
 function getCookieToken(req) {
@@ -31,16 +33,6 @@ function getCookieToken(req) {
 
 function hashToken(token) {
   return createHash("sha256").update(token).digest("hex");
-}
-
-function signingSecret() {
-  const value = process.env.MOMENTUM_SESSION_SECRET;
-  if (!value || value.length < 32) throw new Error("MOMENTUM_SESSION_SECRET must be at least 32 characters.");
-  return value;
-}
-
-function sign(payload) {
-  return createHmac("sha256", signingSecret()).update(payload).digest("base64url");
 }
 
 function credentialsMatch(username, password) {
